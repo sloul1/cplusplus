@@ -13,7 +13,7 @@ Run in file mode: `./mygrep following man_grep_plain_ASCII.txt`
 ![Running in file mode](images/03_file_mode.png)  
 Run in file mode with switches for line numbering `-l` and total occurrences `-o`: `./mygrep -lo following man_grep_plain_ASCII.txt`
 
-## Five planned increments.
+## Four planned increments.
 
 > [!CAUTION]
 > All increments must include all functionalities of previous increments
