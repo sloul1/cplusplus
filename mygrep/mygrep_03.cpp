@@ -57,39 +57,78 @@ Note that previous increments must also work!
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
 // Function to search for a string in a given file
-void searchInFile(const string& filePath, const string& searchString) {
-    ifstream file(filePath);
-    if (!file.is_open()) {
-        cerr << "Could not open file: " << filePath << endl;
+void processFile(const string& filename, const string& searchString, bool lineNumbers, int& totalMatches) {
+    ifstream file(filename);
+    if (!file) {
+        cerr << "Error opening file: " << filename << endl;
         return;
     }
 
     string line;
+    int lineno = 1;
     
     while (getline(file, line)) {
-        if (line.find(searchString) != string::npos) {
-            cout << line << '\n';
+        size_t pos = line.find(searchString);
+        if (pos != string::npos) {
+            if (lineNumbers) {
+                cout << lineno << ": " << line << endl;
+            } else {
+                cout << line << endl;
+            }
+            totalMatches++;
         }
+        lineno++;
     }
-
     file.close();
 }
 
 // Function to process command-line arguments
 void processArguments(int argc, char* argv[]) {
-    if (argc < 3) {
-        cerr << "Usage: " << argv[0] << " <search_string> <file1> [file2 ...]" << endl;
+    bool lineNumbers = false;
+    bool countOccurrences = false;
+
+    int argIndex = 1;
+    while (argIndex < argc && argv[argIndex][0] == '-') {
+        string option = argv[argIndex];
+        for (char c : option.substr(1)) {
+            switch(c) {
+                case 'l':
+                    lineNumbers = true;
+                    break;
+                case 'o':
+                    countOccurrences = true;
+                    break;
+                default:
+                    cerr << "Unknown option: -" << c << endl;
+                    return;
+            }
+        }
+        argIndex++;
+    }
+
+    if (argIndex >= argc) {
+        cerr << "Usage: program [-l] [-o] <search_string> <file1> ... <filen>" << endl;
         return;
     }
 
-    string searchString(argv[1]);
+    string searchString = argv[argIndex++];
+    vector<string> files;
+    while (argIndex < argc) {
+        files.push_back(argv[argIndex++]);
+    }
 
-    for (int i = 2; i < argc; ++i) {
-        searchInFile(argv[i], searchString);
+    int totalMatches = 0;
+    for (const string& file : files) {
+        processFile(file, searchString, lineNumbers, totalMatches);
+    }
+
+    if (countOccurrences) {
+        cout << "Occurrences of lines containing \"" << searchString << "\": " << totalMatches << endl;
     }
 }
 
