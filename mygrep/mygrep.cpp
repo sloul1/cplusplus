@@ -3,11 +3,13 @@
 // Five planned increments:
 // 1st increment: Create 
 
-// Compile: 
-// $ g++ -o mygrep mygrep.cpp
+// Compile: g++ -o mygrep mygrep.cpp
 
-// Run:
-// $ ./mygrep
+// Run in interactive mode: ./mygrep
+
+// Run in file mode: ./mygrep -lo following man_grep_plain_ASCII.txt
+// "following" is a string that is searched from file "man_grep_plain_ASCII.txt"
+// Switch -l for printing line numbering of occurrences and -o total occurrences.
 
 #include <iostream>
 #include <fstream>
